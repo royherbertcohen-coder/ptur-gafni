@@ -3,22 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מחולל הפטור הלאומי ע״ש משה גפני</title>
+  <title>מחולל הפטור הלאומי ע״ש יצחק גולדקנופף</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;600;700&family=Heebo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;500;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- html2pdf for export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <!-- html-to-image for editor export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 
   <style>
     :root {
-      --primary: #0f172a;
-      --accent: #1e40af;
-      --accent-light: #3b82f6;
+      --primary: #0a192f;
+      --navy: #1e3a8a;
+      --accent: #2563eb;
       --bg: #f8fafc;
-      --surface: #ffffff;
+      --card-bg: #ffffff;
       --border: #e2e8f0;
       --text: #0f172a;
       --text-muted: #64748b;
@@ -41,21 +39,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 32px 16px 64px 16px;
-      line-height: 1.5;
+      padding: 16px 16px 48px 16px;
     }
 
-    /* Ambient Subtle Glow */
+    /* Ambient Glow */
     body::before {
       content: '';
       position: fixed;
-      top: -20%;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 600px;
+      width: 900px;
       height: 400px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -63,30 +59,29 @@
     /* Editor Toolbar */
     .editor-toolbar {
       position: fixed;
-      top: 16px;
+      top: 12px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(12px);
       color: white;
-      padding: 8px 18px;
+      padding: 6px 16px;
       border-radius: 999px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 13px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      font-size: 12.5px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       z-index: 1000;
-      transition: all 0.3s ease;
     }
 
     .editor-toolbar select {
       background: #1e293b;
       color: white;
       border: 1px solid #334155;
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11.5px;
       outline: none;
     }
 
@@ -94,264 +89,344 @@
       background: transparent;
       border: 1px solid rgba(255,255,255,0.25);
       color: white;
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11.5px;
       transition: all 0.2s;
     }
 
     .editor-toggle-btn.active {
-      background: #3b82f6;
-      border-color: #3b82f6;
+      background: #2563eb;
+      border-color: #2563eb;
     }
 
-    /* App Container */
-    .app-wrapper {
-      width: 100%;
-      max-width: 580px;
+    /* Header */
+    .app-header {
+      text-align: center;
+      margin-top: 40px;
+      margin-bottom: 24px;
       position: relative;
       z-index: 10;
-      margin-top: 24px;
     }
 
-    /* Minimal Branding Badge */
-    .brand-header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .badge-pill {
+    .pill-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       background: #eff6ff;
       color: #1d4ed8;
       border: 1px solid #dbeafe;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
-    .brand-header h1 {
+    .app-header h1 {
       font-size: 28px;
       font-weight: 800;
-      letter-spacing: -0.5px;
       color: var(--primary);
-      margin-bottom: 8px;
+      letter-spacing: -0.5px;
     }
 
-    .brand-header p {
-      font-size: 15px;
+    .app-header p {
+      font-size: 14.5px;
       color: var(--text-muted);
-      line-height: 1.5;
+      margin-top: 4px;
     }
 
-    /* Card (Minimalist Clean Surface) */
-    .clean-card {
-      background: var(--surface);
+    /* Main Grid: Clean & Balanced Two-Columns */
+    .main-grid {
+      width: 100%;
+      max-width: 1160px;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 28px;
+      align-items: start;
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+      }
+    }
+
+    /* Left Control Card */
+    .control-card {
+      background: var(--card-bg);
       border-radius: 20px;
-      padding: 36px 32px;
+      padding: 28px 24px;
       border: 1px solid var(--border);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(0, 0, 0, 0.02);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    @media (max-width: 480px) {
-      .clean-card {
-        padding: 24px 20px;
-      }
-      .brand-header h1 {
-        font-size: 24px;
-      }
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
 
-    /* Form Fields */
-    .field-group {
-      margin-bottom: 20px;
+    .card-title span.sub {
+      font-size: 12px;
+      color: #10b981;
+      font-weight: 600;
+      background: #ecfdf5;
+      padding: 3px 8px;
+      border-radius: 6px;
     }
 
-    .field-label {
-      display: block;
-      font-size: 13.5px;
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 13px;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 8px;
     }
 
-    .text-input, .select-input {
+    .text-box, .select-box {
       width: 100%;
-      padding: 13px 16px;
-      border-radius: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
       border: 1.5px solid var(--border);
-      font-size: 15px;
-      background: #fafafa;
+      font-size: 14.5px;
+      background: #f8fafc;
       color: var(--text);
-      transition: all 0.2s ease;
       outline: none;
+      transition: all 0.2s ease;
     }
 
-    .text-input:focus, .select-input:focus {
+    .text-box:focus, .select-box:focus {
       border-color: var(--accent);
       background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.08);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
     }
 
-    /* Quick Tag Selector for Reserve Days */
-    .tags-row {
+    /* Slider Container */
+    .slider-container {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .slider-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .slider-val-badge {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .range-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      accent-color: var(--navy);
+      cursor: pointer;
+    }
+
+    /* Checklist */
+    .declaration-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .decl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .decl-item input {
+      margin-top: 2px;
+      accent-color: var(--navy);
+    }
+
+    /* Grant Live Counter */
+    .grant-box {
+      background: linear-gradient(135deg, #0a192f, #1e3a8a);
+      color: white;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grant-label {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .grant-number {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fde047;
+    }
+
+    /* Action Buttons */
+    .actions-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
 
-    .tag-btn {
-      background: #f1f5f9;
-      border: 1.5px solid transparent;
+    .btn-action {
+      background: #f8fafc;
+      color: var(--primary);
+      border: 1px solid var(--border);
       padding: 10px;
       border-radius: 10px;
       font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .tag-btn.active {
-      background: #eff6ff;
-      border-color: #3b82f6;
-      color: #1d4ed8;
-      font-weight: 700;
-    }
-
-    /* Micro Notice */
-    .micro-notice {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      text-align: center;
-      margin: 20px 0;
-      line-height: 1.5;
-    }
-
-    /* Action Button (Apple/Linear Style) */
-    .btn-main {
-      width: 100%;
-      background: #0f172a;
-      color: white;
-      border: none;
-      padding: 15px 24px;
-      border-radius: 12px;
-      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      gap: 6px;
+      transition: all 0.2s;
     }
 
-    .btn-main:hover {
+    .btn-action:hover {
+      background: #edf2f7;
+    }
+
+    .btn-action.download-main {
+      background: #0f172a;
+      color: white;
+      border-color: #0f172a;
+      grid-column: span 2;
+      padding: 13px;
+      font-size: 15px;
+    }
+
+    .btn-action.download-main:hover {
       background: #1e293b;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
     }
 
-    .btn-main:active {
-      transform: translateY(0);
+    /* Right Preview: Goldknopf Official Certificate */
+    .preview-card-wrap {
+      position: sticky;
+      top: 24px;
     }
 
-    /* Certificate Screen (Hidden Initially) */
-    #certificateScreen {
-      display: none;
-      animation: fadeIn 0.4s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Official Certificate Clean Document */
-    .cert-frame {
+    .certificate-doc {
       background: #ffffff;
-      border: 8px double #1e293b;
       border-radius: 8px;
-      padding: 36px 28px;
+      border: 8px double #0a192f;
+      padding: 34px 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       position: relative;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background-image: radial-gradient(#f1f5f9 1px, transparent 1px);
+      background-size: 18px 18px;
     }
 
-    .cert-top-emblem {
+    .cert-top-header {
       text-align: center;
-      border-bottom: 2px solid #0f172a;
-      padding-bottom: 14px;
-      margin-bottom: 22px;
+      border-bottom: 2px solid #0a192f;
+      padding-bottom: 12px;
     }
 
-    .cert-state-line {
+    .cert-ministry-tag {
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       color: var(--text-muted);
     }
 
-    .cert-title {
+    .cert-main-title {
       font-family: 'Frank Ruhl Libre', serif;
-      font-size: 26px;
+      font-size: 25px;
       font-weight: 900;
-      color: #0f172a;
-      margin: 4px 0;
+      color: #0a192f;
+      margin: 4px 0 2px 0;
     }
 
-    .cert-id-tag {
-      font-size: 11px;
-      color: #94a3b8;
-      font-family: monospace;
+    .cert-sub-motto {
+      font-size: 11.5px;
+      color: #64748b;
     }
 
-    .cert-content {
-      font-size: 14.5px;
-      line-height: 1.8;
-      color: #334155;
+    .cert-body-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #1e293b;
     }
 
-    .cert-user-banner {
-      background: #f8fafc;
-      border-right: 4px solid #0f172a;
+    .cert-highlight-citizen {
+      background: #f1f5f9;
+      border-right: 4px solid #0a192f;
       padding: 10px 14px;
       border-radius: 0 6px 6px 0;
-      margin: 14px 0;
+      margin: 10px 0;
       font-weight: 700;
       font-size: 15px;
-      color: #0f172a;
+      color: #0a192f;
     }
 
-    .cert-list {
+    .cert-bullets {
       list-style: none;
-      margin: 14px 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-
-    .cert-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      gap: 7px;
+      margin: 10px 0;
       font-size: 13.5px;
     }
 
-    .cert-list li::before {
-      content: "✓";
-      color: #0f172a;
+    .cert-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .cert-bullets li::before {
+      content: "✔";
+      color: #0a192f;
       font-weight: 900;
     }
 
-    .cert-punchline {
+    .cert-quote-box {
       background: #fffbeb;
       border: 1px solid #fde68a;
       border-radius: 8px;
@@ -360,109 +435,61 @@
       font-weight: 700;
       color: #92400e;
       text-align: center;
-      margin-top: 16px;
       line-height: 1.5;
     }
 
-    .cert-footer-signatures {
+    .cert-signature-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px dashed #e2e8f0;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed #cbd5e1;
     }
 
-    .sig-person {
+    .signatory {
       text-align: center;
     }
 
-    .sig-scribble-text {
+    .sig-handwritten {
       font-family: 'Brush Script MT', cursive;
-      font-size: 22px;
+      font-size: 24px;
       color: #1e3a8a;
-      transform: rotate(-4deg);
+      transform: rotate(-5deg);
     }
 
-    .sig-name-label {
-      font-size: 11px;
+    .sig-name-print {
+      font-size: 12px;
       font-weight: 800;
-      color: #0f172a;
+      color: #0a192f;
     }
 
-    .gold-stamp {
-      width: 60px;
-      height: 60px;
+    .sig-title-print {
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .gold-wax-seal {
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: radial-gradient(circle, #fde68a, #d97706);
-      border: 2px solid #b45309;
+      background: radial-gradient(circle, #fde68a 0%, #d97706 60%, #92400e 100%);
+      border: 2px solid #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       font-size: 9px;
       font-weight: 900;
-      color: #78350f;
+      color: #451a03;
       text-align: center;
       line-height: 1.1;
-      box-shadow: 0 4px 10px rgba(217, 119, 6, 0.25);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
-    /* Certificate Actions */
-    .cert-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .btn-sub {
-      background: #ffffff;
-      color: #0f172a;
-      border: 1.5px solid var(--border);
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .btn-sub:hover {
-      background: #f8fafc;
-      border-color: #cbd5e1;
-    }
-
-    .btn-sub.primary-dl {
-      background: #0f172a;
-      color: white;
-      border-color: #0f172a;
-      grid-column: span 2;
-    }
-
-    .btn-sub.primary-dl:hover {
-      background: #1e293b;
-    }
-
-    .btn-reset {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 12px;
-      cursor: pointer;
-      text-align: center;
-      margin-top: 14px;
-      width: 100%;
-      text-decoration: underline;
-    }
-
-    /* Editor Mode Visual Highlights */
+    /* Editor Mode styles */
     .editor-active [contenteditable="true"] {
-      outline: 1.5px dashed #3b82f6 !important;
+      outline: 1.5px dashed #2563eb !important;
       outline-offset: 2px;
       cursor: text;
     }
@@ -470,8 +497,8 @@
 </head>
 <body>
 
-  <!-- Floating Editor Mode Bar -->
-  <div class="editor-toolbar" id="editorBar">
+  <!-- Top Editor Mode Strip -->
+  <div class="editor-toolbar">
     <span>מצב עריכה:</span>
     <button class="editor-toggle-btn" id="editorToggle" onclick="toggleEditorMode()">כבוי</button>
     <select id="fontSelector" onchange="changeFont(this.value)">
@@ -482,26 +509,30 @@
     </select>
   </div>
 
-  <div class="app-wrapper">
-    <!-- Header -->
-    <div class="brand-header">
-      <div class="badge-pill">
-        <span>● פרויקט סאטירי לחירום</span>
-      </div>
-      <h1>מחולל הפטור הלאומי ע״ש משה גפני</h1>
-      <p>למה לקרוע את התחת בבוץ? הצהר שלמדת ארמית וקבל תעודת פטור רשמית ב-30 שניות.</p>
-    </div>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="pill-badge">● מנהלת "למי רע פה?" הרשמית</div>
+    <h1>מחולל הפטור הלאומי ע״ש יצחק גולדקנופף</h1>
+    <p>גרור את סליידר ימי המילואים, הקלד את שמך — וצפה בתעודת הפטור מתמלאת בזמן אמת בצד.</p>
+  </header>
 
-    <!-- Screen 1: The Input Form (Clean & Minimal) -->
-    <div class="clean-card" id="formScreen">
-      <div class="field-group">
-        <label class="field-label" for="inputName">שם המבקש</label>
-        <input type="text" id="inputName" class="text-input" placeholder="לדוגמה: רועי כהן" value="רועי ישראלי">
+  <!-- Main Side-by-Side App -->
+  <main class="main-grid">
+    <!-- Left: Controls -->
+    <section class="control-card">
+      <div class="card-title">
+        <span>הזנת נתוני פטור</span>
+        <span class="sub">סנכרון חי פעיל</span>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="inputRole">מעמד נוכחי מול המדינה</label>
-        <select id="inputRole" class="select-input">
+      <div class="input-group">
+        <label class="input-label" for="citizenName">שם המבקש</label>
+        <input type="text" id="citizenName" class="text-box" value="רועי ישראלי" placeholder="הקלד את שמך המלא" oninput="syncLive()">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="citizenRole">מעמד אזרחי נוכחי</label>
+        <select id="citizenRole" class="select-box" onchange="syncLive()">
           <option value="לוחם מילואים שחוק">לוחם מילואים שחוק (דרג א')</option>
           <option value="הייטקיסט שמשלם על כולם">הייטקיסט שמשלם על כולם</option>
           <option value="עצמאי קורס עם צו 8 בכיס">עצמאי קורס עם צו 8 בכיס</option>
@@ -509,126 +540,128 @@
         </select>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">ימי מילואים בשנה האחרונה</label>
-        <div class="tags-row">
-          <div class="tag-btn" onclick="selectDays(this, 60)">60 ימים</div>
-          <div class="tag-btn active" onclick="selectDays(this, 180)">180 ימים</div>
-          <div class="tag-btn" onclick="selectDays(this, 250)">250+ ימים</div>
+      <!-- Days Slider -->
+      <div class="slider-container">
+        <div class="slider-header">
+          <span class="slider-title">כמה ימי מילואים עשית בשנה האחרונה?</span>
+          <span class="slider-val-badge" id="sliderBadge">180 ימים</span>
         </div>
+        <input type="range" id="daysSlider" class="range-input" min="0" max="320" value="180" oninput="syncLive()">
       </div>
 
-      <div class="micro-notice">
-        בלחיצה על "הנפקת פטור" אתה מצהיר כי ביצעת הרהור עמוק בטקסט קדום ולא תלבש מדים לעולם.
+      <!-- Declaration -->
+      <div class="declaration-group">
+        <label class="decl-item">
+          <input type="checkbox" checked onchange="syncLive()">
+          <span>אני מצהיר שלא הבנתי מעולם מה קשור גיוס לביטחון וכי "למי רע פה?".</span>
+        </label>
+        <label class="decl-item">
+          <input type="checkbox" checked onchange="syncLive()">
+          <span>אינני מסוגל פיזית ללבוש בגד בצבע זית עקב רגישות עורית מולדת לנטל.</span>
+        </label>
       </div>
 
-      <button class="btn-main" onclick="generateCertificate()">
-        הנפקת תעודת פטור רשמית
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-      </button>
-    </div>
+      <!-- Live Grant Calculation -->
+      <div class="grant-box">
+        <div>
+          <div class="grant-label">מענק חודשי ישיר לעו״ש:</div>
+          <div style="font-size: 11px; opacity: 0.75;">במימון שאר הפראיירים שנשארו לשרת</div>
+        </div>
+        <div class="grant-number" id="grantDisplay">₪8,100</div>
+      </div>
 
-    <!-- Screen 2: The Official Certificate Reveal -->
-    <div id="certificateScreen">
-      <div class="cert-frame" id="certificateToExport">
-        <div class="cert-top-emblem">
-          <div class="cert-state-line">מדינת ישראל • מנהלת קומבינת הנטל</div>
-          <h2 class="cert-title">תעודת פטור מוחלט מנטל המדינה</h2>
-          <div class="cert-id-tag">אסמכתא: GAFNI-2026-SHMAD-9941</div>
+      <!-- Action Buttons -->
+      <div class="actions-grid">
+        <button class="btn-action download-main" onclick="downloadPDF()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          הורד תעודת פטור רשמית (PDF)
+        </button>
+        <button class="btn-action" onclick="shareWhatsApp()">
+          וואטסאפ למג״ד
+        </button>
+        <button class="btn-action" onclick="shareTwitter()">
+          צייץ בטוויטר
+        </button>
+      </div>
+    </section>
+
+    <!-- Right: Real-Time Updating Certificate Preview -->
+    <div class="preview-card-wrap">
+      <div class="certificate-doc" id="certDocument">
+        <div class="cert-top-header">
+          <div class="cert-ministry-tag">מדינת ישראל • משרד הבינוי, השיכון וההשתמטות</div>
+          <h2 class="cert-main-title">תעודת פטור מוחלט מנטל המדינה</h2>
+          <div class="cert-sub-motto">על פי דוקטרינת "מה קשור גיוס? למי רע פה?" • אסמכתא: GOLD-2026-9921</div>
         </div>
 
-        <div class="cert-content">
+        <div class="cert-body-text">
           <p>הרינו לאשר בזאת בתוקף סמכותנו לפי עקרון <strong>"הפראיירים לא מתים אלא שוכבים בבוץ"</strong>, כי האזרח:</p>
 
-          <div class="cert-user-banner">
-            <span id="displayCertName">רועי ישראלי</span> — <span id="displayCertRole">לוחם מילואים שחוק (משוחרר לאלתר)</span>
+          <div class="cert-highlight-citizen">
+            <span id="previewName">רועי ישראלי</span> — במעמד: <span id="previewRole">לוחם מילואים שחוק (משוחרר לאלתר)</span>
           </div>
 
-          <p>השלים בהצלחה את הליך ההתנערות והוכר כמי ש<strong>"לומד ממש חזק בבית עכשיו"</strong>. בהתאם לכך, מוענקים לו הפטורים הבאים:</p>
+          <p>השלים בהצלחה את הליך ההתנערות המלא, נגמל מ-<span id="previewDays">180</span> ימי שירות, והוכר כמי ש<strong>"לומד ממש חזק בבית עכשיו"</strong>. בהתאם לכך, מוענקים לו הזכויות הבאות:</p>
 
-          <ul class="cert-list">
-            <li><strong>פטור מוחלט מצה"ל:</strong> איסור שליחת צו 8 או יצירת קשר מקצינת הקישור.</li>
-            <li><strong>פטור מנשיאה בנטל:</strong> זכות מלאה לקבלת שירותי ביטחון חינם מלוחמים אחרים.</li>
-            <li><strong>קצבה חודשית ישירה:</strong> <span id="displayGrant">₪6,800</span> לחודש בעו״ש במימון שאר האזרחים.</li>
+          <ul class="cert-bullets">
+            <li><strong>פטור מוחלט מצה"ל:</strong> איסור שליחת צו 8, צווי חירום או הטרדה טלפונית מקצינת הקישור.</li>
+            <li><strong>פטור מנשיאה בנטל:</strong> זכות מוקנית לקבלת הגנת כיפת ברזל ושירותי מדינה חינם מלוחמים אחרים.</li>
+            <li><strong>קצבת "למי רע פה?":</strong> העברה יזומה בסך <strong id="previewGrant">₪8,100</strong> ישירות לחשבון הבנק בכל חודש.</li>
           </ul>
 
-          <div class="cert-punchline">
-            "אם מלמול טקסט בארמית מיירט כטב"מים בצפון — אין שום סיבה שתעשה עוד יום אחד במילואים."
+          <div class="cert-quote-box">
+            "אם מלמול טקסט בארמית מיירט כטב"מים בצפון — למי בדיוק רע פה שאתה לא עושה מילואים?"
           </div>
 
-          <div class="cert-footer-signatures">
-            <div class="sig-person">
-              <div class="sig-scribble-text">מ. גפני</div>
-              <div class="sig-name-label">ח״כ משה גפני</div>
+          <div class="cert-signature-row">
+            <div class="signatory">
+              <div class="sig-handwritten">י. גולדקנופף</div>
+              <div class="sig-name-print">יצחק גולדקנופף</div>
+              <div class="sig-title-print">שר הבינוי, השיכון ועוקף הגיוס</div>
             </div>
 
-            <div class="gold-stamp">
+            <div class="gold-wax-seal">
               <div>פטור רשמי</div>
               <div>בד״ץ</div>
               <div>2026</div>
             </div>
 
-            <div class="sig-person">
-              <div class="sig-scribble-text">י. אייכלר</div>
-              <div class="sig-name-label">ח״כ ישראל אייכלר</div>
+            <div class="signatory">
+              <div class="sig-handwritten">מ. גפני</div>
+              <div class="sig-name-print">משה גפני</div>
+              <div class="sig-title-print">יו״ר ועדת הכספים וקומבינות</div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="cert-actions">
-        <button class="btn-sub primary-dl" onclick="downloadCertificatePDF()">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          הורד תעודת פטור (PDF)
-        </button>
-        <button class="btn-sub" onclick="shareWhatsApp()">
-          וואטסאפ למג״ד
-        </button>
-        <button class="btn-sub" onclick="shareTwitter()">
-          צייץ בטוויטר
-        </button>
-      </div>
-
-      <button class="btn-reset" onclick="resetForm()">← ערוך פרטים מחדש</button>
     </div>
-  </div>
+  </main>
 
   <script>
-    let selectedDaysCount = 180;
     let isEditorActive = false;
 
-    function selectDays(el, count) {
-      document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
-      el.classList.add('active');
-      selectedDaysCount = count;
+    function syncLive() {
+      const name = document.getElementById('citizenName').value.trim() || 'פראייר אנונימי';
+      const role = document.getElementById('citizenRole').value;
+      const days = parseInt(document.getElementById('daysSlider').value);
+
+      document.getElementById('sliderBadge').textContent = days + ' ימים';
+      document.getElementById('previewName').textContent = name;
+      document.getElementById('previewRole').textContent = role + ' (משוחרר לאלתר)';
+      document.getElementById('previewDays').textContent = days;
+
+      // Calculate dynamic mock grant
+      const totalGrant = 4500 + (days * 20);
+      const formatted = '₪' + totalGrant.toLocaleString();
+      document.getElementById('grantDisplay').textContent = formatted;
+      document.getElementById('previewGrant').textContent = formatted;
     }
 
-    function generateCertificate() {
-      const name = document.getElementById('inputName').value.trim() || 'אזרח פראייר';
-      const role = document.getElementById('inputRole').value;
-      
-      document.getElementById('displayCertName').textContent = name;
-      document.getElementById('displayCertRole').textContent = role + ' (משוחרר לאלתר)';
-      
-      const grant = 4500 + (selectedDaysCount * 20);
-      document.getElementById('displayGrant').textContent = '₪' + grant.toLocaleString();
-
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('certificateScreen').style.display = 'block';
-      window.scrollTo({ top: 100, behavior: 'smooth' });
-    }
-
-    function resetForm() {
-      document.getElementById('formScreen').style.display = 'block';
-      document.getElementById('certificateScreen').style.display = 'none';
-    }
-
-    function downloadCertificatePDF() {
-      const element = document.getElementById('certificateToExport');
+    function downloadPDF() {
+      const element = document.getElementById('certDocument');
       const opt = {
         margin:       8,
-        filename:     'Ptur-Gafni-Official.pdf',
+        filename:     'Ptur-Goldknopf-Official.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -637,16 +670,17 @@
     }
 
     function shareWhatsApp() {
-      const text = encodeURIComponent('המג״ד שלום, בהתאם להנחיות ועדת הכספים של גפני הנפקתי פטור רשמי משירות מילואים. אני לומד ממש חזק בבית עכשיו. מצורף האישור!');
+      const name = document.getElementById('citizenName').value.trim() || 'אני';
+      const text = encodeURIComponent(`המג״ד שלום, בהתאם להנחיות השר גולדקנופף הנפקתי פטור רשמי משירות מילואים. אני לומד ממש חזק בבית עכשיו ולמי רע פה? מצורף האישור: https://royherbertcohen-coder.github.io/ptur-gafni/`);
       window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
     }
 
     function shareTwitter() {
-      const text = encodeURIComponent('זהו, הנפקתי את תעודת הפטור הרשמית של גפני. אם מלמול בארמית מיירט כטב״מים בצפון – אין שום סיבה שאמשיך לטחון מילואים.');
+      const text = encodeURIComponent('זהו, הנפקתי את תעודת הפטור הרשמית של גולדקנופף. אם מלמול בארמית מיירט כטב״מים בצפון – למי בדיוק רע פה שאתה לא עושה מילואים? https://royherbertcohen-coder.github.io/ptur-gafni/');
       window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
     }
 
-    /* Editor Mode Implementation */
+    /* Editor Mode */
     function toggleEditorMode() {
       isEditorActive = !isEditorActive;
       const btn = document.getElementById('editorToggle');
@@ -657,7 +691,7 @@
         btn.classList.add('active');
         body.classList.add('editor-active');
         enableContentEditable(true);
-        alert('מצב עריכה הופעל!\n1. לחץ על כל טקסט כדי לערוך אותו.\n2. Alt + קליק על אלמנט כדי למחוק אותו.\n3. החלף גופן בסרגל העליון.');
+        alert('מצב עריכה הופעל!\n1. לחץ על כל טקסט כדי לערוך אותו ישירות.\n2. Alt + קליק על אלמנט כדי למחוק אותו.\n3. החלף גופן בסרגל העליון.');
       } else {
         btn.textContent = 'כבוי';
         btn.classList.remove('active');
@@ -669,7 +703,7 @@
     function enableContentEditable(enabled) {
       const textElements = document.querySelectorAll('h1, h2, p, span, div, li');
       textElements.forEach(el => {
-        if (!el.closest('#editorBar')) {
+        if (!el.closest('.editor-toolbar') && !el.closest('input') && !el.closest('select')) {
           el.contentEditable = enabled;
           if (enabled) {
             el.addEventListener('click', deleteOnAltClick);
@@ -691,6 +725,9 @@
     function changeFont(fontName) {
       document.documentElement.style.setProperty('--font-family', fontName);
     }
+
+    // Init sync on load
+    syncLive();
   </script>
 </body>
 </html>

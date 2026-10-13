@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מחולל הפטור הלאומי ע״ש משה גפני</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@700;900&family=Rubik:wght@400;600;700&family=Heebo:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- html2pdf for export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- html-to-image for editor export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #1e40af;
+      --accent-light: #3b82f6;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --gold: #d97706;
+      --font-family: 'Assistant', -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 32px 16px 64px 16px;
+      line-height: 1.5;
+    }
+
+    /* Ambient Subtle Glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Editor Toolbar */
+    .editor-toolbar {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .editor-toolbar select {
+      background: #1e293b;
+      color: white;
+      border: 1px solid #334155;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .editor-toggle-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .editor-toggle-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+    }
+
+    /* App Container */
+    .app-wrapper {
+      width: 100%;
+      max-width: 580px;
+      position: relative;
+      z-index: 10;
+      margin-top: 24px;
+    }
+
+    /* Minimal Branding Badge */
+    .brand-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #dbeafe;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .brand-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .brand-header p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Card (Minimalist Clean Surface) */
+    .clean-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 36px 32px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 20px 25px -5px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 480px) {
+      .clean-card {
+        padding: 24px 20px;
+      }
+      .brand-header h1 {
+        font-size: 24px;
+      }
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      font-size: 15px;
+      background: #fafafa;
+      color: var(--text);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .text-input:focus, .select-input:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.08);
+    }
+
+    /* Quick Tag Selector for Reserve Days */
+    .tags-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .tag-btn {
+      background: #f1f5f9;
+      border: 1.5px solid transparent;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .tag-btn.active {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+      font-weight: 700;
+    }
+
+    /* Micro Notice */
+    .micro-notice {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 20px 0;
+      line-height: 1.5;
+    }
+
+    /* Action Button (Apple/Linear Style) */
+    .btn-main {
+      width: 100%;
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 15px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .btn-main:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    }
+
+    .btn-main:active {
+      transform: translateY(0);
+    }
+
+    /* Certificate Screen (Hidden Initially) */
+    #certificateScreen {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Official Certificate Clean Document */
+    .cert-frame {
+      background: #ffffff;
+      border: 8px double #1e293b;
+      border-radius: 8px;
+      padding: 36px 28px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+
+    .cert-top-emblem {
+      text-align: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 14px;
+      margin-bottom: 22px;
+    }
+
+    .cert-state-line {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+    }
+
+    .cert-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #0f172a;
+      margin: 4px 0;
+    }
+
+    .cert-id-tag {
+      font-size: 11px;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+
+    .cert-content {
+      font-size: 14.5px;
+      line-height: 1.8;
+      color: #334155;
+    }
+
+    .cert-user-banner {
+      background: #f8fafc;
+      border-right: 4px solid #0f172a;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-weight: 700;
+      font-size: 15px;
+      color: #0f172a;
+    }
+
+    .cert-list {
+      list-style: none;
+      margin: 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cert-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13.5px;
+    }
+
+    .cert-list li::before {
+      content: "✓";
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .cert-punchline {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #92400e;
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .cert-footer-signatures {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .sig-person {
+      text-align: center;
+    }
+
+    .sig-scribble-text {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 22px;
+      color: #1e3a8a;
+      transform: rotate(-4deg);
+    }
+
+    .sig-name-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .gold-stamp {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fde68a, #d97706);
+      border: 2px solid #b45309;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 900;
+      color: #78350f;
+      text-align: center;
+      line-height: 1.1;
+      box-shadow: 0 4px 10px rgba(217, 119, 6, 0.25);
+    }
+
+    /* Certificate Actions */
+    .cert-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-sub {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1.5px solid var(--border);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-sub:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .btn-sub.primary-dl {
+      background: #0f172a;
+      color: white;
+      border-color: #0f172a;
+      grid-column: span 2;
+    }
+
+    .btn-sub.primary-dl:hover {
+      background: #1e293b;
+    }
+
+    .btn-reset {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 14px;
+      width: 100%;
+      text-decoration: underline;
+    }
+
+    /* Editor Mode Visual Highlights */
+    .editor-active [contenteditable="true"] {
+      outline: 1.5px dashed #3b82f6 !important;
+      outline-offset: 2px;
+      cursor: text;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Editor Mode Bar -->
+  <div class="editor-toolbar" id="editorBar">
+    <span>מצב עריכה:</span>
+    <button class="editor-toggle-btn" id="editorToggle" onclick="toggleEditorMode()">כבוי</button>
+    <select id="fontSelector" onchange="changeFont(this.value)">
+      <option value="'Assistant', sans-serif">Assistant</option>
+      <option value="'Rubik', sans-serif">Rubik</option>
+      <option value="'Heebo', sans-serif">Heebo</option>
+      <option value="'Frank Ruhl Libre', serif">Frank Ruhl</option>
+    </select>
+  </div>
+
+  <div class="app-wrapper">
+    <!-- Header -->
+    <div class="brand-header">
+      <div class="badge-pill">
+        <span>● פרויקט סאטירי לחירום</span>
+      </div>
+      <h1>מחולל הפטור הלאומי ע״ש משה גפני</h1>
+      <p>למה לקרוע את התחת בבוץ? הצהר שלמדת ארמית וקבל תעודת פטור רשמית ב-30 שניות.</p>
+    </div>
+
+    <!-- Screen 1: The Input Form (Clean & Minimal) -->
+    <div class="clean-card" id="formScreen">
+      <div class="field-group">
+        <label class="field-label" for="inputName">שם המבקש</label>
+        <input type="text" id="inputName" class="text-input" placeholder="לדוגמה: רועי כהן" value="רועי ישראלי">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="inputRole">מעמד נוכחי מול המדינה</label>
+        <select id="inputRole" class="select-input">
+          <option value="לוחם מילואים שחוק">לוחם מילואים שחוק (דרג א')</option>
+          <option value="הייטקיסט שמשלם על כולם">הייטקיסט שמשלם על כולם</option>
+          <option value="עצמאי קורס עם צו 8 בכיס">עצמאי קורס עם צו 8 בכיס</option>
+          <option value="סטודנט שהסמסטר שלו הלך לפח">סטודנט שהסמסטר שלו הלך לפח</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">ימי מילואים בשנה האחרונה</label>
+        <div class="tags-row">
+          <div class="tag-btn" onclick="selectDays(this, 60)">60 ימים</div>
+          <div class="tag-btn active" onclick="selectDays(this, 180)">180 ימים</div>
+          <div class="tag-btn" onclick="selectDays(this, 250)">250+ ימים</div>
+        </div>
+      </div>
+
+      <div class="micro-notice">
+        בלחיצה על "הנפקת פטור" אתה מצהיר כי ביצעת הרהור עמוק בטקסט קדום ולא תלבש מדים לעולם.
+      </div>
+
+      <button class="btn-main" onclick="generateCertificate()">
+        הנפקת תעודת פטור רשמית
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </div>
+
+    <!-- Screen 2: The Official Certificate Reveal -->
+    <div id="certificateScreen">
+      <div class="cert-frame" id="certificateToExport">
+        <div class="cert-top-emblem">
+          <div class="cert-state-line">מדינת ישראל • מנהלת קומבינת הנטל</div>
+          <h2 class="cert-title">תעודת פטור מוחלט מנטל המדינה</h2>
+          <div class="cert-id-tag">אסמכתא: GAFNI-2026-SHMAD-9941</div>
+        </div>
+
+        <div class="cert-content">
+          <p>הרינו לאשר בזאת בתוקף סמכותנו לפי עקרון <strong>"הפראיירים לא מתים אלא שוכבים בבוץ"</strong>, כי האזרח:</p>
+
+          <div class="cert-user-banner">
+            <span id="displayCertName">רועי ישראלי</span> — <span id="displayCertRole">לוחם מילואים שחוק (משוחרר לאלתר)</span>
+          </div>
+
+          <p>השלים בהצלחה את הליך ההתנערות והוכר כמי ש<strong>"לומד ממש חזק בבית עכשיו"</strong>. בהתאם לכך, מוענקים לו הפטורים הבאים:</p>
+
+          <ul class="cert-list">
+            <li><strong>פטור מוחלט מצה"ל:</strong> איסור שליחת צו 8 או יצירת קשר מקצינת הקישור.</li>
+            <li><strong>פטור מנשיאה בנטל:</strong> זכות מלאה לקבלת שירותי ביטחון חינם מלוחמים אחרים.</li>
+            <li><strong>קצבה חודשית ישירה:</strong> <span id="displayGrant">₪6,800</span> לחודש בעו״ש במימון שאר האזרחים.</li>
+          </ul>
+
+          <div class="cert-punchline">
+            "אם מלמול טקסט בארמית מיירט כטב"מים בצפון — אין שום סיבה שתעשה עוד יום אחד במילואים."
+          </div>
+
+          <div class="cert-footer-signatures">
+            <div class="sig-person">
+              <div class="sig-scribble-text">מ. גפני</div>
+              <div class="sig-name-label">ח״כ משה גפני</div>
+            </div>
+
+            <div class="gold-stamp">
+              <div>פטור רשמי</div>
+              <div>בד״ץ</div>
+              <div>2026</div>
+            </div>
+
+            <div class="sig-person">
+              <div class="sig-scribble-text">י. אייכלר</div>
+              <div class="sig-name-label">ח״כ ישראל אייכלר</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="cert-actions">
+        <button class="btn-sub primary-dl" onclick="downloadCertificatePDF()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          הורד תעודת פטור (PDF)
+        </button>
+        <button class="btn-sub" onclick="shareWhatsApp()">
+          וואטסאפ למג״ד
+        </button>
+        <button class="btn-sub" onclick="shareTwitter()">
+          צייץ בטוויטר
+        </button>
+      </div>
+
+      <button class="btn-reset" onclick="resetForm()">← ערוך פרטים מחדש</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedDaysCount = 180;
+    let isEditorActive = false;
+
+    function selectDays(el, count) {
+      document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      selectedDaysCount = count;
+    }
+
+    function generateCertificate() {
+      const name = document.getElementById('inputName').value.trim() || 'אזרח פראייר';
+      const role = document.getElementById('inputRole').value;
+      
+      document.getElementById('displayCertName').textContent = name;
+      document.getElementById('displayCertRole').textContent = role + ' (משוחרר לאלתר)';
+      
+      const grant = 4500 + (selectedDaysCount * 20);
+      document.getElementById('displayGrant').textContent = '₪' + grant.toLocaleString();
+
+      document.getElementById('formScreen').style.display = 'none';
+      document.getElementById('certificateScreen').style.display = 'block';
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      document.getElementById('formScreen').style.display = 'block';
+      document.getElementById('certificateScreen').style.display = 'none';
+    }
+
+    function downloadCertificatePDF() {
+      const element = document.getElementById('certificateToExport');
+      const opt = {
+        margin:       8,
+        filename:     'Ptur-Gafni-Official.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function shareWhatsApp() {
+      const text = encodeURIComponent('המג״ד שלום, בהתאם להנחיות ועדת הכספים של גפני הנפקתי פטור רשמי משירות מילואים. אני לומד ממש חזק בבית עכשיו. מצורף האישור!');
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function shareTwitter() {
+      const text = encodeURIComponent('זהו, הנפקתי את תעודת הפטור הרשמית של גפני. אם מלמול בארמית מיירט כטב״מים בצפון – אין שום סיבה שאמשיך לטחון מילואים.');
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    }
+
+    /* Editor Mode Implementation */
+    function toggleEditorMode() {
+      isEditorActive = !isEditorActive;
+      const btn = document.getElementById('editorToggle');
+      const body = document.body;
+      
+      if (isEditorActive) {
+        btn.textContent = 'פעיל';
+        btn.classList.add('active');
+        body.classList.add('editor-active');
+        enableContentEditable(true);
+        alert('מצב עריכה הופעל!\n1. לחץ על כל טקסט כדי לערוך אותו.\n2. Alt + קליק על אלמנט כדי למחוק אותו.\n3. החלף גופן בסרגל העליון.');
+      } else {
+        btn.textContent = 'כבוי';
+        btn.classList.remove('active');
+        body.classList.remove('editor-active');
+        enableContentEditable(false);
+      }
+    }
+
+    function enableContentEditable(enabled) {
+      const textElements = document.querySelectorAll('h1, h2, p, span, div, li');
+      textElements.forEach(el => {
+        if (!el.closest('#editorBar')) {
+          el.contentEditable = enabled;
+          if (enabled) {
+            el.addEventListener('click', deleteOnAltClick);
+          } else {
+            el.removeEventListener('click', deleteOnAltClick);
+          }
+        }
+      });
+    }
+
+    function deleteOnAltClick(e) {
+      if (e.altKey && isEditorActive) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.remove();
+      }
+    }
+
+    function changeFont(fontName) {
+      document.documentElement.style.setProperty('--font-family', fontName);
+    }
+  </script>
+</body>
+</html>
